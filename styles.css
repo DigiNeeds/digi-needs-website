@@ -38,7 +38,7 @@ button { font: inherit; }
 .nav-wrap {
   min-height: 78px; display: flex; align-items: center; justify-content: space-between;
 }
-.brand img { width: 168px; height: auto; }
+.brand img { width: 145px; height: auto; }
 .desktop-nav { display: flex; align-items: center; gap: 28px; font-weight: 700; font-size: .94rem; }
 .desktop-nav a { transition: color .2s ease; }
 .desktop-nav a:hover { color: var(--teal-dark); }
@@ -48,52 +48,352 @@ button { font: inherit; }
 .mobile-nav[hidden] { display: none; }
 .mobile-nav a { padding: 10px; }
 
-.hero {
-  position: relative; overflow: hidden;
-  background: linear-gradient(120deg, #fff 0%, #f7fbfa 55%, #e9f6f2 100%);
-  padding: 80px 0 100px;
-}
-.hero-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 64px; align-items: center; position: relative; z-index: 2; }
-.eyebrow { letter-spacing: .2em; font-size: .76rem; font-weight: 800; color: var(--teal-dark); margin: 0 0 14px; }
-.hero h1, .section-heading h2, .process h2, .why h2, .cta-section h2 {
-  font-family: "Montserrat", sans-serif; line-height: 1.08; margin: 0;
-}
-.hero h1 { font-size: clamp(2.6rem, 6vw, 5rem); max-width: 760px; }
-.hero h1 span { color: var(--gold); }
-.hero-text { font-size: 1.15rem; max-width: 650px; color: #555; margin: 24px 0 28px; }
-.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
-.button {
-  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  border-radius: 999px; padding: 13px 21px; font-weight: 800; border: 1px solid transparent;
-  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
-}
-.button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,.10); }
-.button-primary { background: var(--teal); color: #123e3b; }
-.button-secondary { background: white; border-color: var(--line); }
-.button-dark { background: var(--charcoal); color: white; }
-.button-gold { background: var(--gold); color: white; }
-.trust-line { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 26px; color: var(--muted); font-size: .9rem; }
-
 .hero-card {
-  border-radius: 36px; background: var(--charcoal); color: white; padding: 10px;
-  box-shadow: 0 30px 70px rgba(46,46,46,.20); transform: rotate(1deg);
+  position: relative;
+
+  width: 285px;
+  height: 555px;
+
+  margin: 0 auto;
+  padding: 9px;
+
+  border-radius: 42px;
+
+  background: var(--charcoal);
+  color: white;
+
+  box-shadow:
+    0 30px 70px rgba(46,46,46,.20);
+
+  transform: rotate(2deg);
+
+  transition:
+    transform .35s ease,
+    box-shadow .35s ease;
 }
+
+.hero-card:hover {
+  transform: rotate(0deg) translateY(-6px);
+
+  box-shadow:
+    0 40px 80px rgba(46,46,46,.22);
+}
+
+
+/* Phone screen */
+
 .hero-card-inner {
-  border: 1px solid rgba(255,255,255,.14); border-radius: 28px; padding: 42px;
-  min-height: 460px; display: flex; flex-direction: column; justify-content: center;
-  background: radial-gradient(circle at top right, rgba(126,211,193,.25), transparent 45%);
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  box-sizing: border-box;
+  overflow: hidden;
+
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 34px;
+
+  padding: 35px 25px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(126,211,193,.25),
+      transparent 45%
+    );
 }
-.card-kicker { letter-spacing: .2em; font-size: .75rem; color: var(--teal); font-weight: 800; }
-.hero-card h2 { font: 600 clamp(2rem,4vw,3.4rem)/1.08 "Montserrat", sans-serif; margin: 10px 0 30px; }
-.hero-card h2 strong { color: var(--teal); }
-.mini-services { display: grid; gap: 13px; }
-.mini-services div { display: flex; gap: 12px; align-items: center; font-weight: 600; }
-.mini-services span { color: var(--gold); font-weight: 800; font-size: .78rem; }
-.gold-line { height: 2px; width: 75px; background: var(--gold); margin-top: 30px; }
-.script { font-size: 1.3rem; color: var(--gold); font-style: italic; margin: 12px 0 0; }
-.hero-shape { position: absolute; border-radius: 50%; filter: blur(1px); opacity: .25; }
-.hero-shape-one { width: 380px; height: 380px; background: var(--teal); right: -160px; top: -120px; }
-.hero-shape-two { width: 220px; height: 220px; background: var(--gold); left: -120px; bottom: -100px; }
+
+
+/* Phone speaker / camera */
+
+.hero-card::before {
+  content: "";
+
+  position: absolute;
+  z-index: 5;
+
+  top: 16px;
+  left: 50%;
+
+  width: 70px;
+  height: 20px;
+
+  border-radius: 20px;
+
+  background: var(--charcoal);
+
+  transform: translateX(-50%);
+}
+
+
+/* Phone bottom indicator */
+
+.hero-card::after {
+  content: "";
+
+  position: absolute;
+  z-index: 5;
+
+  bottom: 17px;
+  left: 50%;
+
+  width: 75px;
+  height: 4px;
+
+  border-radius: 10px;
+
+  background: rgba(255,255,255,.7);
+
+  transform: translateX(-50%);
+}
+
+
+/* =========================================
+   PHONE CONTENT
+   ========================================= */
+
+.phone-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  margin-bottom: 42px;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.phone-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 31px;
+  height: 31px;
+
+  border-radius: 10px;
+
+  background: var(--teal);
+  color: var(--charcoal);
+
+  font-size: 16px;
+  font-weight: 800;
+}
+
+
+/* Kicker */
+
+.card-kicker {
+  margin: 0 0 8px;
+
+  letter-spacing: .2em;
+
+  font-size: .50rem;
+  font-weight: 800;
+
+  color: var(--teal);
+}
+
+
+/* Main heading */
+
+.hero-card h4 {
+  font-family: "Montserrat", sans-serif;
+  font-size: clamp(1.1rem, 4vw, 2.1rem);
+  line-height: 1.08;
+
+  margin: 10px 0 30px;
+}
+
+.hero-card h4 strong {
+  color: var(--teal);
+}
+
+
+/* Services */
+
+.mini-services {
+  display: grid;
+  gap: 13px;
+}
+
+.mini-services div {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  font-size: .72rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.mini-services span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 25px;
+  height: 25px;
+
+  flex-shrink: 0;
+
+  border-radius: 7px;
+
+  background: rgba(126,211,193,.12);
+
+  color: var(--gold);
+
+  font-size: .68rem;
+  font-weight: 800;
+}
+
+
+/* Gold line */
+
+.gold-line {
+  width: 75px;
+  height: 2px;
+
+  margin-top: 30px;
+
+  background: var(--gold);
+}
+
+
+/* Closing message */
+
+.script {
+  margin: 12px 0 0;
+
+  color: var(--gold);
+
+  font-size: 1.3rem;
+  font-style: italic;
+}
+
+
+/* =========================================
+   HERO DECORATIVE SHAPES
+   ========================================= */
+
+.hero-shape {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(1px);
+  opacity: .25;
+}
+
+.hero-shape-one {
+  width: 380px;
+  height: 380px;
+
+  background: var(--teal);
+
+  right: -160px;
+  top: -120px;
+}
+
+.hero-shape-two {
+  width: 220px;
+  height: 220px;
+
+  background: var(--gold);
+
+  left: -120px;
+  bottom: -100px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 900px) {
+
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 50px;
+  }
+
+  .hero-copy {
+    text-align: center;
+  }
+
+  .hero-text {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .trust-line {
+    justify-content: center;
+  }
+
+  .hero-card {
+    width: 255px;
+    height: 500px;
+  }
+}
+
+
+@media (max-width: 600px) {
+
+  .hero {
+    padding: 60px 0 80px;
+  }
+
+  .hero-grid {
+    gap: 40px;
+  }
+
+  .hero-card {
+    width: 225px;
+    height: 440px;
+
+    border-radius: 34px;
+  }
+
+  .hero-card-inner {
+    border-radius: 27px;
+    padding: 27px 18px;
+  }
+
+  .phone-brand {
+    margin-bottom: 30px;
+  }
+
+  .hero-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 22px;
+  }
+
+  .mini-services {
+    gap: 10px;
+  }
+
+  .mini-services div {
+    font-size: .62rem;
+    gap: 9px;
+  }
+
+  .mini-services span {
+    width: 22px;
+    height: 22px;
+    font-size: .58rem;
+  }
+
+  .script {
+    font-size: 1.05rem;
+  }
+}
 
 .section-heading { max-width: 720px; margin-bottom: 42px; }
 .section-heading h2, .process h2, .why h2 { font-size: clamp(2rem, 4vw, 3.4rem); }
