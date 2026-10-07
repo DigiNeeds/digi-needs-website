@@ -43,10 +43,117 @@ button { font: inherit; }
 .desktop-nav a { transition: color .2s ease; }
 .desktop-nav a:hover { color: var(--teal-dark); }
 .nav-cta { padding: 10px 18px; border-radius: 999px; background: var(--charcoal); color: white; }
-.menu-toggle { display: none; border: 0; background: none; font-size: 1.5rem; color: var(--charcoal); }
+.menu-toggle { display: none; border: 0; background: none; font-size: 1.5rem; }
 .mobile-nav { padding: 10px 20px 20px; display: grid; gap: 12px; font-weight: 700; }
 .mobile-nav[hidden] { display: none; }
 .mobile-nav a { padding: 10px; }
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(120deg, #fff 0%, #f7fbfa 55%, #e9f6f2 100%);
+  padding: 80px 0 100px;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 64px;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.eyebrow {
+  letter-spacing: .2em;
+  font-size: .76rem;
+  font-weight: 800;
+  color: var(--teal-dark);
+  margin: 0 0 14px;
+}
+
+.hero h2,
+.section-heading h2,
+.process h2,
+.why h2,
+.cta-section h2 {
+  font-family: "Montserrat", sans-serif;
+  line-height: 1.08;
+  margin: 0;
+}
+
+.hero h2 {
+  font-size: clamp(1.6rem, 5vw, 4rem);
+  max-width: 760px;
+}
+
+.hero h2 span {
+  color: var(--gold);
+}
+
+.hero-text {
+  font-size: 1.15rem;
+  max-width: 650px;
+  color: #555;
+  margin: 24px 0 28px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 999px;
+  padding: 13px 21px;
+  font-weight: 800;
+  border: 1px solid transparent;
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0,0,0,.10);
+}
+
+.button-primary {
+  background: var(--teal);
+  color: #123e3b;
+}
+
+.button-secondary {
+  background: white;
+  border-color: var(--line);
+}
+
+.button-dark {
+  background: var(--charcoal);
+  color: white;
+}
+
+.button-gold {
+  background: var(--gold);
+  color: white;
+}
+
+.trust-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 26px;
+  color: var(--muted);
+  font-size: .9rem;
+}
+
+
+/* =========================================
+   DIGINEEDS PHONE MOCKUP
+   ========================================= */
 
 .hero-card {
   position: relative;
@@ -394,7 +501,6 @@ button { font: inherit; }
     font-size: 1.05rem;
   }
 }
-
 .section-heading { max-width: 720px; margin-bottom: 42px; }
 .section-heading h2, .process h2, .why h2 { font-size: clamp(2rem, 4vw, 3.4rem); }
 .section-heading > p:last-child { color: var(--muted); font-size: 1.05rem; margin-top: 14px; }
@@ -495,7 +601,7 @@ details p { color: var(--muted); margin-bottom: 0; }
   .desktop-nav { display: none; }
   .menu-toggle { display: block; }
   .hero { padding: 55px 0 70px; }
-  .hero h1 { font-size: 2.65rem; }
+  .hero h2 { font-size: 1.63rem; }
   .hero-card-inner { padding: 30px; min-height: 390px; }
   .service-grid { grid-template-columns: 1fr; }
   .service-card { min-height: auto; }
@@ -504,3 +610,4 @@ details p { color: var(--muted); margin-bottom: 0; }
   .footer-grid { grid-template-columns: 1fr; }
   .trust-line { display: grid; gap: 6px; }
 }
+
