@@ -23,7 +23,7 @@ document.querySelectorAll(".mobile-nav a").forEach(link => {
  * Never put private API keys or payment secrets in this file.
  */
 const DIGINEEDS_CONFIG = {
-  APPS_SCRIPT_URL: "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbznjl3R_umd0vGuinp_GxPImyh4v3JcSdAHjGP-sO04syhLAlmEl7d7uKxYU0OmfG5y/exec",
   payments: {
     registration: "PASTE_YOCO_REGISTRATION_PAYMENT_LINK_HERE",
     "landing-page": "PASTE_YOCO_LANDING_PAGE_PAYMENT_LINK_HERE",
@@ -208,32 +208,29 @@ document.addEventListener("keydown", event => {
   if (event.key === "Escape" && !serviceModal.hidden) closeServiceModal();
 });
 
-serviceForm.addEventListener("submit", async event => {
-  event.preventDefault();
 
-  if (!serviceForm.checkValidity()) {
-    serviceForm.reportValidity();
-    return;
-  }
+/* =========================================
+   DIGINEEDS BACKEND SUBMISSION
+   ========================================= */
 
-  const endpoint = DIGINEEDS_CONFIG.APPS_SCRIPT_URL;
-  if (!endpoint || endpoint === "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
-    formError.hidden = false;
-    formError.textContent = "The intake form is ready, but the DigiNeeds submission endpoint still needs to be connected before launch.";
-    return;
-  }
+const responseFrame = document.createElement("iframe");
+responseFrame.name = "digineeds-response";
+responseFrame.title = "Enquiry submission response";
+responseFrame.hidden = true;
+document.body.appendChild(responseFrame);
 
-  submitButton.disabled = true;
-  submitButton.textContent = "Sending…";
-  formError.hidden = true;
+let submissionPending = false;
+let submissionTimer = null;
 
-  const formData = new FormData(serviceForm);
-  formData.append("submitted_at", new Date().toISOString());
-  formData.append("source", "DigiNeeds website");
+function finishSubmission(success) {
+  if (!submissionPending) return;
 
-  try {
-    await fetch(endpoint, { method: "POST", mode: "no-cors", body: formData });
+  submissionPending = false;
+  clearTimeout(submissionTimer);
+  submitButton.disabled = false;
+  submitButton.textContent = "Submit request →";
 
+  if (success) {
     serviceForm.hidden = true;
     formSuccess.hidden = false;
 
@@ -244,15 +241,75 @@ serviceForm.addEventListener("submit", async event => {
     if (configuredPayment) {
       paymentLink.href = DIGINEEDS_CONFIG.payments[activeService];
       paymentLink.hidden = false;
+    } else {
+      paymentLink.hidden = true;
     }
-  } catch (error) {
-    console.error("DigiNeeds form submission failed:", error);
+  } else {
     formError.hidden = false;
-    formError.textContent = "We couldn't submit your request right now. Please try again or contact DigiNeeds on WhatsApp.";
-  } finally {
-    submitButton.disabled = false;
-    submitButton.textContent = "Submit request →";
+    formError.textContent =
+      "We couldn't confirm your request. Please try again or contact DigiNeeds directly.";
   }
+}
+
+window.addEventListener("message", event => {
+  // Accept messages only from our submission iframe.
+  if (event.source !== responseFrame.contentWindow) return;
+
+  const data = event.data;
+
+  if (!data || data.type !== "digineeds-result") return;
+
+  finishSubmission(data.success === true);
+});
+
+serviceForm.addEventListener("submit", event => {
+  event.preventDefault();
+
+  if (submissionPending) return;
+
+  if (!serviceForm.checkValidity()) {
+    serviceForm.reportValidity();
+    return;
+  }
+
+  const endpoint = DIGINEEDS_CONFIG.APPS_SCRIPT_URL;
+
+  if (
+    !endpoint ||
+    endpoint === "https://script.google.com/macros/s/AKfycbznjl3R_umd0vGuinp_GxPImyh4v3JcSdAHjGP-sO04syhLAlmEl7d7uKxYU0OmfG5y/exec"
+  ) {
+    formError.hidden = false;
+    formError.textContent =
+      "The enquiry system hasn't been connected yet. Please contact DigiNeeds directly.";
+    return;
+  }
+
+  // A configured endpoint should be the deployed Apps Script URL.
+  if (!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(endpoint)) {
+    formError.hidden = false;
+    formError.textContent =
+      "The enquiry system URL doesn't look correct. Please contact DigiNeeds.";
+    return;
+  }
+
+  formError.hidden = true;
+  submissionPending = true;
+
+  submitButton.disabled = true;
+  submitButton.textContent = "Sending…";
+
+  serviceForm.action = endpoint;
+  serviceForm.method = "POST";
+  serviceForm.target = responseFrame.name;
+
+  // A native form POST works with the iframe response without
+  // needing to read a cross-origin fetch response.
+  serviceForm.submit();
+
+  // Do not display success just because the browser sent the request.
+  submissionTimer = setTimeout(() => {
+    finishSubmission(false);
+  }, 30000);
 });
 
 const yearElement = document.getElementById("year");
