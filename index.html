@@ -249,7 +249,12 @@
     <form id="service-form" novalidate>
       <input type="hidden" name="service" id="service-name">
       <input type="hidden" name="service_price" id="service-price">
-      
+      <div class="form-trap" aria-hidden="true">
+  <label for="website-trap">Leave this field empty</label>
+  <input
+    id="website-trap" type="text" name="website_trap" tabindex="-1"
+    autocomplete="off">
+</div>
       <div class="form-grid">
         <label class="form-field">
           <span>Full name <b aria-hidden="true">*</b></span>
