@@ -73,9 +73,9 @@ const serviceDefinitions = {
     description: "Tell us about the role or direction you're targeting so your CV can be tailored appropriately.",
     price: "R50",
     fields: [
-      { name: "target_role", label: "Role or type of work you're targeting", type: "text", required: true,
+      { name: "target_role", label: "Role or industry", type: "text", required: true,
         placeholder: "e.g. Customer Support Specialist" },
-      { name: "experience", label: "Briefly describe your experience", type: "textarea", required: true,
+      { name: "experience", label: "Briefly describe your experience", type: "textarea", required: false,
         placeholder: "A few sentences about your recent work or experience." },
       { name: "existing_cv", label: "Do you already have a CV?", type: "select", required: true,
         options: ["Yes — I'll send it after submitting", "No — I need one created from scratch"] },
