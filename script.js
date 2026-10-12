@@ -23,7 +23,7 @@ document.querySelectorAll(".mobile-nav a").forEach(link => {
  * Never put private API keys or payment secrets in this file.
  */
 const DIGINEEDS_CONFIG = {
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbznjl3R_umd0vGuinp_GxPImyh4v3JcSdAHjGP-sO04syhLAlmEl7d7uKxYU0OmfG5y/exec",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycby8r_rtLLPLMsHSuYpw90pwW094fGrMUK2ryyVT9XwPpp7AQt8bQRQIugIiD140vd8/exec",
   payments: {
     registration: "PASTE_YOCO_REGISTRATION_PAYMENT_LINK_HERE",
     "landing-page": "PASTE_YOCO_LANDING_PAGE_PAYMENT_LINK_HERE",
