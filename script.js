@@ -75,8 +75,6 @@ const serviceDefinitions = {
     fields: [
       { name: "target_role", label: "Role or industry", type: "text", required: true,
         placeholder: "e.g. Customer Support Specialist" },
-      { name: "experience", label: "Briefly describe your experience", type: "textarea", required: false,
-        placeholder: "A few sentences about your recent work or experience." },
       { name: "existing_cv", label: "Do you already have a CV?", type: "select", required: true,
         options: ["Yes — I'll send it after submitting", "No — I need one created from scratch"] },
       { name: "linkedin", label: "LinkedIn or professional profile link", type: "url", required: false, placeholder: "https://..." },
@@ -276,8 +274,7 @@ serviceForm.addEventListener("submit", event => {
 
   if (
     !endpoint ||
-    endpoint === "https://script.google.com/macros/s/AKfycbznjl3R_umd0vGuinp_GxPImyh4v3JcSdAHjGP-sO04syhLAlmEl7d7uKxYU0OmfG5y/exec"
-  ) {
+    endpoint === ""
     formError.hidden = false;
     formError.textContent =
       "The enquiry system hasn't been connected yet. Please contact DigiNeeds directly.";
