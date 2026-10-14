@@ -206,53 +206,13 @@ document.addEventListener("keydown", event => {
   if (event.key === "Escape" && !serviceModal.hidden) closeServiceModal();
 });
 /* =========================================
-   DIGINEEDS BACKEND SUBMISSION
+   DIGINEEDS BACKEND SUBMISSION (FETCH VERSION)
    ========================================= */
-const responseFrame = document.createElement("iframe");
-responseFrame.name = "digineeds-response";
-responseFrame.title = "Enquiry submission response";
-responseFrame.hidden = true;
-document.body.appendChild(responseFrame);
-
 let submissionPending = false;
-let submissionTimer = null;
 
-function finishSubmission(success) {
-  if (!submissionPending) return;
-  submissionPending = false;
-  clearTimeout(submissionTimer);
-  submitButton.disabled = false;
-  submitButton.textContent = "Submit request →";
-  
-  if (success) {
-    serviceForm.hidden = true;
-    formSuccess.hidden = false;
-    const configuredPayment =
-      DIGINEEDS_CONFIG.payments[activeService] &&
-      !DIGINEEDS_CONFIG.payments[activeService].startsWith("PASTE_");
-    if (configuredPayment) {
-      paymentLink.href = DIGINEEDS_CONFIG.payments[activeService];
-      paymentLink.hidden = false;
-    } else {
-      paymentLink.hidden = true;
-    }
-  } else {
-    formError.hidden = false;
-    formError.textContent =
-      "We couldn't confirm your request. Please try again or contact DigiNeeds directly.";
-  }
-}
-
-window.addEventListener("message", event => {
-  // Accept messages only from our submission iframe.
-  if (event.source !== responseFrame.contentWindow) return;
-  const data = event.data;
-  if (!data || data.type !== "digineeds-result") return;
-  finishSubmission(data.success === true);
-});
-
-serviceForm.addEventListener("submit", event => {
+serviceForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  
   if (submissionPending) return;
   if (!serviceForm.checkValidity()) {
     serviceForm.reportValidity();
@@ -260,36 +220,75 @@ serviceForm.addEventListener("submit", event => {
   }
   
   const endpoint = DIGINEEDS_CONFIG.APPS_SCRIPT_URL;
-  
-  // ✅ FIXED: Restructured the broken if-statement syntax bounds
   if (!endpoint || endpoint === "") {
     formError.hidden = false;
-    formError.textContent =
-      "The enquiry system hasn't been connected yet. Please contact DigiNeeds directly.";
-    return;
-  } 
-  
-  if (!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(endpoint)) {
-    formError.hidden = false;
-    formError.textContent =
-      "The enquiry system URL doesn't look correct. Please contact DigiNeeds.";
+    formError.textContent = "The enquiry system hasn't been connected yet. Please contact DigiNeeds directly.";
     return;
   }
   
+  if (!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(endpoint)) {
+    formError.hidden = false;
+    formError.textContent = "The enquiry system URL doesn't look correct. Please contact DigiNeeds.";
+    return;
+  }
+
+  // 1. Lock UI and set state to sending
   formError.hidden = true;
   submissionPending = true;
   submitButton.disabled = true;
   submitButton.textContent = "Sending…";
-  
-  serviceForm.action = endpoint;
-  serviceForm.method = "POST";
-  serviceForm.target = responseFrame.name;
-  
-  serviceForm.submit();
-  
-  submissionTimer = setTimeout(() => {
-    finishSubmission(false);
-  }, 30000);
+
+  // 2. Gather form data dynamically into a standard URLSearchParams object
+  const formData = new FormData(serviceForm);
+  const searchParams = new URLSearchParams();
+  for (const [key, value] of formData.entries()) {
+    searchParams.append(key, value);
+  }
+
+  try {
+    // 3. Post to Google Apps Script Web App via Fetch API
+    const response = await fetch(endpoint, {
+      method: "POST",
+      mode: "cors",         // Let the browser handle standard redirection cross-origin
+      redirect: "follow",   // Forces the browser to automatically follow Google's 302 redirect string
+      body: searchParams
+    });
+
+    const result = await response.json();
+
+    // 4. Handle programmatic response
+    if (result && result.success === true) {
+      serviceForm.hidden = true;
+      formSuccess.hidden = false;
+
+      const configuredPayment =
+        DIGINEEDS_CONFIG.payments[activeService] &&
+        !DIGINEEDS_CONFIG.payments[activeService].startsWith("PASTE_");
+      
+      if (configuredPayment) {
+        paymentLink.href = DIGINEEDS_CONFIG.payments[activeService];
+        paymentLink.hidden = false;
+        
+        // 🚀 AUTOMATIC REDIRECT: Uncomment the line below if you want users 
+        // to go straight to Yoco instead of needing to click the link button.
+        // window.location.href = DIGINEEDS_CONFIG.payments[activeService];
+      } else {
+        paymentLink.hidden = true;
+      }
+    } else {
+      throw new Error(result.message || "Unsuccessful backend execution");
+    }
+
+  } catch (error) {
+    console.error("Submission processing failed:", error);
+    formError.hidden = false;
+    formError.textContent = "We couldn't process your request. Please try again or contact DigiNeeds directly.";
+  } finally {
+    // 5. Unlock UI regardless of outcome
+    submissionPending = false;
+    submitButton.disabled = false;
+    submitButton.textContent = "Submit request →";
+  }
 });
 
 const yearElement = document.getElementById("year");
