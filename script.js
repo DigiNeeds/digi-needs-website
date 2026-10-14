@@ -205,12 +205,9 @@ document.querySelectorAll("[data-modal-close]").forEach(element => {
 document.addEventListener("keydown", event => {
   if (event.key === "Escape" && !serviceModal.hidden) closeServiceModal();
 });
-
-
 /* =========================================
    DIGINEEDS BACKEND SUBMISSION
    ========================================= */
-
 const responseFrame = document.createElement("iframe");
 responseFrame.name = "digineeds-response";
 responseFrame.title = "Enquiry submission response";
@@ -222,20 +219,17 @@ let submissionTimer = null;
 
 function finishSubmission(success) {
   if (!submissionPending) return;
-
   submissionPending = false;
   clearTimeout(submissionTimer);
   submitButton.disabled = false;
   submitButton.textContent = "Submit request →";
-
+  
   if (success) {
     serviceForm.hidden = true;
     formSuccess.hidden = false;
-
     const configuredPayment =
       DIGINEEDS_CONFIG.payments[activeService] &&
       !DIGINEEDS_CONFIG.payments[activeService].startsWith("PASTE_");
-
     if (configuredPayment) {
       paymentLink.href = DIGINEEDS_CONFIG.payments[activeService];
       paymentLink.hidden = false;
@@ -252,58 +246,47 @@ function finishSubmission(success) {
 window.addEventListener("message", event => {
   // Accept messages only from our submission iframe.
   if (event.source !== responseFrame.contentWindow) return;
-
   const data = event.data;
-
   if (!data || data.type !== "digineeds-result") return;
-
   finishSubmission(data.success === true);
 });
 
 serviceForm.addEventListener("submit", event => {
   event.preventDefault();
-
   if (submissionPending) return;
-
   if (!serviceForm.checkValidity()) {
     serviceForm.reportValidity();
     return;
   }
-
+  
   const endpoint = DIGINEEDS_CONFIG.APPS_SCRIPT_URL;
-
-  if (
-    !endpoint ||
-    endpoint === ""
+  
+  // ✅ FIXED: Restructured the broken if-statement syntax bounds
+  if (!endpoint || endpoint === "") {
     formError.hidden = false;
     formError.textContent =
       "The enquiry system hasn't been connected yet. Please contact DigiNeeds directly.";
     return;
-  }
-
-  // A configured endpoint should be the deployed Apps Script URL.
+  } 
+  
   if (!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(endpoint)) {
     formError.hidden = false;
     formError.textContent =
       "The enquiry system URL doesn't look correct. Please contact DigiNeeds.";
     return;
   }
-
+  
   formError.hidden = true;
   submissionPending = true;
-
   submitButton.disabled = true;
   submitButton.textContent = "Sending…";
-
+  
   serviceForm.action = endpoint;
   serviceForm.method = "POST";
   serviceForm.target = responseFrame.name;
-
-  // A native form POST works with the iframe response without
-  // needing to read a cross-origin fetch response.
+  
   serviceForm.submit();
-
-  // Do not display success just because the browser sent the request.
+  
   submissionTimer = setTimeout(() => {
     finishSubmission(false);
   }, 30000);
