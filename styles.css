@@ -33,7 +33,7 @@ button { font: inherit; }
 .nav-wrap {
   min-height: 70px; display: flex; align-items: center; 
   justify-content: space-between;}
-.brand img { width: 145px; height: auto; }
+.brand img { width: 145px; height: 116px; }
 .desktop-nav { display: none; align-items: center; gap: 28px; font-weight: 700; font-size: .94rem; }
 .desktop-nav a { transition: color .2s ease; }
 .desktop-nav a:hover { color: var(--teal-dark); }
