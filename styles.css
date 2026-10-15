@@ -498,7 +498,7 @@ body.modal-open { overflow: hidden; }
   margin-top: 2px;
   accent-color: var(--teal-dark);
 }
-.consent-field a {
+.consent-field a, #home {
   color: var(--teal-dark);
   font-weight: 700;
   text-decoration: underline;
